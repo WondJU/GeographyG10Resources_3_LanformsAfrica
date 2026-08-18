@@ -102,10 +102,10 @@
             zoomControl: true
         });
 
-        // 2. Load Esri Shaded Relief (100% natural, label-free, border-free physical photography base)
-        L.tileLayer('https://arcgisonline.com{z}/{y}/{x}', {
-            maxZoom: 13,
-            attribution: 'Tiles &copy; Esri &mdash; Source: Esri'
+        // 2. Load CartoDB Plain Terrain Base Layer (100% text-free and border-free physical terrain)
+        L.tileLayer('https://{s}://{z}/{x}/{y}.png', {
+            maxZoom: 20,
+            attribution: '&copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors &copy; <a href="https://carto.com">CARTO</a>'
         }).addTo(map);
 
         // Dictionary to easily hook up tracking elements via script macros
@@ -117,43 +117,43 @@
                 name: "1. Atlas Mountains",
                 center: [31.5, -5.0], zoom: 5, color: "purple",
                 desc: "The only folded mountain system in Africa, formed by tectonic collisions between the African and Eurasian plates. It separates the humid northern coastlines from the harsh Sahara Desert.",
-                bounds: [[35, -11], [36, -5], [37, 2], [35, 7], [32, 10], [30, 8], [28, -2], [29, -10]]
+                bounds: [[35, -11], [36, -5], [34, 2], [35, 6], [32, 8], [30, 4], [28, -2], [29, -10]]
             },
             "reg2": {
                 name: "2. The Sahara",
                 center: [23.0, 12.0], zoom: 4, color: "orange",
                 desc: "The world's largest hot desert, spanning nearly one-third of the continent. Characterized by vast sand seas (ergs), stone plateaus, and hyper-arid conditions.",
-                bounds: [[30, -15], [32, 15], [31, 34], [22, 34], [15, 31], [16, -16], [22, -17]]
+                bounds: [[30, -15], [32, -5], [27, -2], [29, 8], [31, 10], [32, 25], [31, 34], [29, 34], [22, 36], [16, 36], [15, 30], [16, 15], [15, -5], [16, -16], [22, -17]]
             },
             "reg3": {
                 name: "3. The Sahel",
                 center: [14.5, 15.0], zoom: 4, color: "orange",
                 desc: "A semi-arid transitional belt of flat grasslands and scrub savannas separating the dry Sahara Desert to the north from the wetter tropical regions to the south.",
-                bounds: [[16, -16], [15, 31], [12, 32], [11, -15]]
+                bounds: [[16, -16], [15, -5], [16, 15], [15, 30], [16, 36], [14, 38], [11, 41], [10, 36], [11, 28], [12, 15], [12, -2], [11, -15]]
             },
             "reg4": {
                 name: "4. The Savanna",
                 center: [6.0, 20.0], zoom: 4, color: "orange",
                 desc: "A vast tropical grassland ecosystem featuring distinct wet and dry seasons. It supports the world's most diverse communities of large herbivorous mammals and predators.",
-                bounds: [[11, -15], [12, 32], [5, 30], [4, 9], [6, -12]]
+                bounds: [[11, -15], [12, -2], [12, 15], [11, 28], [10, 36], [4, 30], [3, 25], [4, 15], [5, 8], [6, -12]]
             },
             "reg5": {
                 name: "5. The Tropical Rainforest",
                 center: [-1.0, 22.0], zoom: 5, color: "orange",
                 desc: "Centering around the massive Congo River Basin, this region features dense, multi-layered evergreen forests with immense biodiversity and heavy, year-round rainfall.",
-                bounds: [[4, 9], [5, 14], [4, 28], [-4, 29], [-6, 18], [-5, 11]]
+                bounds: [[4, 9], [5, 15], [4, 25], [3, 25], [4, 30], [0, 29], [-4, 29], [-6, 18], [-5, 11]]
             },
             "reg6": {
                 name: "6. The Rift Valley & Great Lakes",
                 center: [-5.0, 34.0], zoom: 5, color: "red",
                 desc: "A massive geological fracture system creating steep-sided valleys, active volcanoes, and deep, elongated lakes like Tanganyika, Malawi, and Victoria.",
-                bounds: [[5, 30], [10, 41], [4, 42], [-5, 39], [-15, 36], [-16, 33], [-10, 32], [-2, 29]]
+                bounds: [[12, 43], [10, 41], [4, 37], [2, 38], [-5, 39], [-15, 36], [-16, 33], [-10, 32], [-2, 29]]
             },
             "reg7": {
                 name: "7. Ethiopian & Eritrean Highlands",
                 center: [10.0, 39.0], zoom: 6, color: "red",
                 desc: "Known as the 'Roof of Africa,' this massive, rugged basaltic plateau reaches elevations over 4,000 meters and acts as a major water tower supplying the Nile river system.",
-                bounds: [[17, 38], [16, 40], [12, 43], [8, 43], [4, 39], [6, 35], [11, 35], [14, 37]]
+                bounds: [[16, 39], [15, 41], [12, 43], [10, 41], [4, 37], [6, 34], [9, 34], [14, 36]]
             },
             "reg8": {
                 name: "8. Southern Africa Systems",
