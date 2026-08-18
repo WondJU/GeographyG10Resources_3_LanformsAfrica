@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Africa Physical Regions Map</title>
+    
+    <!-- Open-source mapping frameworks -->
+    <link rel="stylesheet" href="https://unpkg.com" />
+    <script src="https://unpkg.com"></script>
+
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+        #map {
+            height: 100%;
+            width: 100%;
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            z-index: 1;
+        }
+        .control-panel {
+            position: fixed;
+            top: 15px;
+            left: 55px;
+            z-index: 9999;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #bbb;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        .control-panel label {
+            font-weight: bold;
+            font-size: 13px;
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        .control-panel select {
+            padding: 6px;
+            font-size: 13px;
+            border-radius: 4px;
+            border: 1px solid #aaa;
+            width: 230px;
+            cursor: pointer;
+        }
+        .popup-box h3 {
+            margin: 0 0 5px 0;
+            color: #111;
+            font-size: 16px;
+        }
+        .popup-box p {
+            margin: 5px 0;
+            font-size: 13px;
+            line-height: 1.45;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Selection Dropdown Overlay Widget -->
+    <div class="control-panel">
+        <label for="flyto">Fly to Physical Region:</label>
+        <select id="flyto" onchange="navigateMap(this.value)">
+            <option value="all" data-lat="2.0" data-lon="20.0" data-zoom="3.5">Full Continent View</option>
+            
+            <option disabled style="background-color: #eee; font-weight: bold;">--- African Alpine System ---</option>
+            <option value="reg1">1. Atlas Mountains</option>
+            
+            <option disabled style="background-color: #eee; font-weight: bold;">--- African Massif ---</option>
+            <option value="reg2">2. The Sahara</option>
+            <option value="reg3">3. The Sahel</option>
+            <option value="reg4">4. The Savanna</option>
+            <option value="reg5">5. The Tropical Rainforest</option>
+            
+            <option disabled style="background-color: #eee; font-weight: bold;">--- East African Highlands & Rift ---</option>
+            <option value="reg6">6. The Rift Valley & Great Lakes</option>
+            <option value="reg7">7. Ethiopian & Eritrean Highlands</option>
+            
+            <option disabled style="background-color: #eee; font-weight: bold;">--- Southern Africa Platform ---</option>
+            <option value="reg8">8. Southern Africa Systems</option>
+        </select>
+    </div>
+
+    <!-- Map Canvas Window -->
+    <div id="map"></div>
+
+    <script>
+        // 1. Initialize Leaflet Map Instance over Africa
+        var map = L.map('map', {
+            center: [2.0, 20.0],
+            zoom: 3.5,
+            zoomControl: true
+        });
+
+        // 2. Load Esri Shaded Relief (100% natural, label-free, border-free physical photography base)
+        L.tileLayer('https://arcgisonline.com{z}/{y}/{x}', {
+            maxZoom: 13,
+            attribution: 'Tiles &copy; Esri &mdash; Source: Esri'
+        }).addTo(map);
+
+        // Dictionary to easily hook up tracking elements via script macros
+        var mapFeatures = {};
+
+        // 3. Define the exact geographical profiles, descriptions, and boundary vectors
+        var regionsData = {
+            "reg1": {
+                name: "1. Atlas Mountains",
+                center: [31.5, -5.0], zoom: 5, color: "purple",
+                desc: "The only folded mountain system in Africa, formed by tectonic collisions between the African and Eurasian plates. It separates the humid northern coastlines from the harsh Sahara Desert.",
+                bounds: [[35, -11], [36, -5], [37, 2], [35, 7], [32, 10], [30, 8], [28, -2], [29, -10]]
+            },
+            "reg2": {
+                name: "2. The Sahara",
+                center: [23.0, 12.0], zoom: 4, color: "orange",
+                desc: "The world's largest hot desert, spanning nearly one-third of the continent. Characterized by vast sand seas (ergs), stone plateaus, and hyper-arid conditions.",
+                bounds: [[30, -15], [32, 15], [31, 34], [22, 34], [15, 31], [16, -16], [22, -17]]
+            },
+            "reg3": {
+                name: "3. The Sahel",
+                center: [14.5, 15.0], zoom: 4, color: "orange",
+                desc: "A semi-arid transitional belt of flat grasslands and scrub savannas separating the dry Sahara Desert to the north from the wetter tropical regions to the south.",
+                bounds: [[16, -16], [15, 31], [12, 32], [11, -15]]
+            },
+            "reg4": {
+                name: "4. The Savanna",
+                center: [6.0, 20.0], zoom: 4, color: "orange",
+                desc: "A vast tropical grassland ecosystem featuring distinct wet and dry seasons. It supports the world's most diverse communities of large herbivorous mammals and predators.",
+                bounds: [[11, -15], [12, 32], [5, 30], [4, 9], [6, -12]]
+            },
+            "reg5": {
+                name: "5. The Tropical Rainforest",
+                center: [-1.0, 22.0], zoom: 5, color: "orange",
+                desc: "Centering around the massive Congo River Basin, this region features dense, multi-layered evergreen forests with immense biodiversity and heavy, year-round rainfall.",
+                bounds: [[4, 9], [5, 14], [4, 28], [-4, 29], [-6, 18], [-5, 11]]
+            },
+            "reg6": {
+                name: "6. The Rift Valley & Great Lakes",
+                center: [-5.0, 34.0], zoom: 5, color: "red",
+                desc: "A massive geological fracture system creating steep-sided valleys, active volcanoes, and deep, elongated lakes like Tanganyika, Malawi, and Victoria.",
+                bounds: [[5, 30], [10, 41], [4, 42], [-5, 39], [-15, 36], [-16, 33], [-10, 32], [-2, 29]]
+            },
+            "reg7": {
+                name: "7. Ethiopian & Eritrean Highlands",
+                center: [10.0, 39.0], zoom: 6, color: "red",
+                desc: "Known as the 'Roof of Africa,' this massive, rugged basaltic plateau reaches elevations over 4,000 meters and acts as a major water tower supplying the Nile river system.",
+                bounds: [[17, 38], [16, 40], [12, 43], [8, 43], [4, 39], [6, 35], [11, 35], [14, 37]]
+            },
+            "reg8": {
+                name: "8. Southern Africa Systems",
+                center: [-25.0, 22.0], zoom: 5, color: "blue",
+                desc: "An elevated plateau region bounded by the Drakensberg mountain escarpment, containing unique arid and hyper-arid zones like the Kalahari and Namib Deserts.",
+                bounds: [[-15, 12], [-12, 20], [-18, 25], [-18, 33], [-28, 33], [-34, 25], [-34, 18], [-23, 14]]
+            }
+        };
+
+        // 4. Generate the map elements (Pins + Transparent Border Outlines)
+        for (var key in regionsData) {
+            var item = regionsData[key];
+            var popupContent = "<div class='popup-box'><h3>" + item.name + "</h3><hr><p>" + item.desc + "</p></div>";
+
+            // Draw the rough polygon border outline overlay layer
+            var polygon = L.polygon(item.bounds, {
+                color: item.color,
+                weight: 3,
+                opacity: 0.7,
+                fillColor: item.color,
+                fillOpacity: 0.15
+            }).addTo(map);
+
+            // Create center indicator pin node marker rings
+            var pin = L.circleMarker(item.center, {
+                radius: 9,
+                fillColor: item.color,
+                color: "#ffffff",
+                weight: 2,
+                opacity: 1,
+                fillOpacity: 0.9
+            }).addTo(map);
+
+            // Bind interactions to both the center circle point and the outline area
+            pin.bindPopup(popupContent, { maxWidth: 320 });
+            pin.bindTooltip(item.name);
+            polygon.bindPopup(popupContent, { maxWidth: 320 });
+
+            // Store markers inside local memory array to enable click macro call handling
+            mapFeatures[key] = { pin: pin, center: item.center, zoom: item.zoom };
+        }
+
+        // 5. Navigation engine script logic
+        function navigateMap(targetKey) {
+            if (targetKey === "all") {
+                map.closePopup();
+                map.flyTo([2.0, 20.0], 3.5, { animate: true, duration: 1.5 });
+            } else {
+                var feature = mapFeatures[targetKey];
+                map.flyTo(feature.center, feature.zoom, { animate: true, duration: 1.5 });
+                
+                // Automatically open the descriptive popup window when camera arrival animation ends
+                map.once('moveend', function() {
+                    feature.pin.openPopup();
+                });
+            }
+        }
+    </script>
+</body>
+</html>
